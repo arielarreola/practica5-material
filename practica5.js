@@ -1,5 +1,6 @@
 const express = require('express');
 const session = require('express-session');
+const cookieParser = require('cookie-parser');
 const port = 3700;
 const app = express();
 
@@ -10,44 +11,67 @@ app.use(session({
     saveUninitialized: true,
 }));
 
-app.use((req, res, next) => {
-    //capturamos la ruta actual
-    //inicializamos el valor de la key que apunta a ruta actual con el valor actual o con cero
-    //incrementamos el valor de la key que apunta a la ruta actual
-    //si el contador llega a incrementarse a 3
-        //escribimos el mensaje
-        //en una respuesta de texto enviamos un script javascript concatena
-    //si aun no es tres... continuamos la ejecucion de las rutas
-    next()
-}
+app.use(cookieParser());
 
-);
+const visitados = {};
+
+app.use((req, res, next) => {
+    const rutaActual = req.path;
+    if (!visitados[rutaActual]) {
+        visitados[rutaActual] = 1;
+    } else {
+        visitados[rutaActual]++;
+        if (visitados[rutaActual] === 3) {
+            const msg = `Parece que te interesa la página ${rutaActual}`;
+            res.send(`<script>alert('${msg}')</script>`);
+        }
+    }
+    next();
+});
 
 app.get('/', (req, res) => {
-    res.send('Visita las paginas que tu quieras');
+    res.send('Visita las páginas que quieras');
 });
+
 app.get('/query', (req, res) => {
-    res.send('querys');
+    const { dato1, dato2, dato3 } = req.query;
+    if (dato1) {
+        res.cookie("Cookie1", dato1, { maxAge: 10000 });
+    }
+    if (dato2) {
+        res.cookie("Cookie2", dato2, { maxAge: 10000 });
+    }
+    if (dato3) {
+        res.cookie("Cookie3", dato3, { maxAge: 10000 });
+    }
+    res.send('Querys recibidos y cookies establecidas');
 });
+
 app.get('/ruta1', (req, res) => {
-    res.send('Pagina de ruta1');
+    res.send('Página de ruta1');
 });
 
 app.get('/ruta2', (req, res) => {
-    res.send('Pagina de ruta2');
+    res.send('Página de ruta2');
 });
+
 app.get('/ruta3', (req, res) => {
-    res.send('Pagina de ruta3');
+    res.send('Página de ruta3');
 });
 
 app.get('/ruta4', (req, res) => {
-    res.send('Pagina de ruta4');
+    res.send('Página de ruta4');
 });
+
+app.get('/ruta5', (req, res) => {
+    res.send('Página de ruta5');
+});
+
 app.get('/historial', (req, res) => {
-    let paginas = null
-    res.send(`Páginas consultadas: ${paginas}`);
+    let paginas = Object.keys(visitados).map(ruta => `${ruta}: ${visitados[ruta]} visitas`).join('<br>');
+    res.send(`Páginas consultadas:<br>${paginas}`);
 });
 
 app.listen(port, () => {
-    console.log(`Escuchando puerto `,port);
+    console.log(`Escuchando puerto ${port}`);
 });
