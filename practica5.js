@@ -11,18 +11,19 @@ app.use(session({
 }));
 
 app.use((req, res, next) => {
-    //capturamos la ruta actual
-    if (req.session.visitados){
-        req.session.visitados={}
+    // Inicializamos la propiedad visitados en cada sesión
+    if (!req.session.visitados) {
+        req.session.visitados = {};
     }
-    const rutaActual=req.path
-    req.session.visitados[rutaActual]=req.session.visitados[rutaActual]||0
-    req.session.visitados[rutaActual]++
-    
+
+    //capturamos la ruta actual
+    const rutaActual = req.path;
+    req.session.visitados[rutaActual] = req.session.visitados[rutaActual] || 0;
+    req.session.visitados[rutaActual]++;
+
     if (req.session.visitados[rutaActual] === 3) {
         res.send(`<script>alert('Has visitado esta página 3 veces');</script>`);
-    }
-    else {
+    } else {
         next();
     }
 });
@@ -64,8 +65,8 @@ app.get('/ruta4', (req, res) => {
 });
 
 app.get('/historial', (req, res) => {
-    let paginas = null
-    res.send(`Páginas consultadas: ${paginas}`);
+    let paginas = Object.keys(req.session.visitados).map(ruta => `${ruta}: ${req.session.visitados[ruta]}`).join('<br>');
+    res.send(`Páginas consultadas: <br>${paginas}`);
 });
 
 app.listen(port, () => {
