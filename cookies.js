@@ -4,20 +4,28 @@ const port=3000
 const app = express()
 app.use(cookieParser())
 
-function createCookies(req, res) {
-    res.cookie('Hola mundo', "Esta es una cookie hola mundo", {
-        maxAge: 100000,
+function createCookies(req, res, firstName, carrera) {
+    res.cookie('titulo', firstName, {
+        maxAge: 180000, //3 minutos = 180000 milisegundos
         httpOnly: false,//para que no lo manipule el navegador, sino solo la peticion
         secure: true,//solo en https
         sameSite: 'lax',
         expires: new Date("2024-02-29")
     })
-    const agent = req.headers['user-agent']
-    res.cookie('InfoNavegador', agent, {
-        maxAge: 20000
-
+    res.cookie('descripcion', carrera, {
+        maxAge: 180000, //3 minutos = 180000 milisegundos
+        httpOnly: false,//para que no lo manipule el navegador, sino solo la peticion
+        secure: true,//solo en https
+        sameSite: 'lax',
+        expires: new Date("2024-02-29")
     })
 }
+
+app.post('/guardarDatos',(req,res)=>{
+    const { firstName, carrera } = req.body;
+    createCookies(req, res, firstName, carrera);
+    res.send('Datos guardados en cookies');
+})
 
 function deleteCookies(res) {
     res.clearCookie("Hola mundo")
