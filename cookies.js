@@ -6,11 +6,11 @@ app.use(cookieParser())
 
 function createCookies(req, res) {
     res.cookie('CookieHM', "Esta es una cookie hola mundo", {
-        //maxAge: 100000,
+        maxAge: 1000*60,
         httpOnly: false,//para que no lo manipule el navegador, sino solo la peticion
         secure: true,//solo en https
         sameSite: 'lax',
-        expires: new Date("2024-02-29")
+        //expires: new Date("2024-02-29")
     })
     const agent = req.headers['user-agent']
     res.cookie('InfoNavegador', agent, {
@@ -23,7 +23,7 @@ function deleteCookies(res) {
 }
 
 app.get('/', (req, res) => {
-
+    createCookies/req
     res.send('Hello world')
 })
 
