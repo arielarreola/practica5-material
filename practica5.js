@@ -11,6 +11,18 @@ app.use(session({
 }));
 
 app.use((req, res, next) => {
+    if(!req.session.visitados){
+        req.session.visitados={}
+    }
+    const rutaActual = req.path
+    req.session.visitados[rutaActual]=req.session.visitados[rutaActual]||0
+    req.session.visitados[rutaActual]++
+    if(req.session.visitados[rutaActual]===3){
+        const msg= `parece que te interesa el tema de la ruta ${rutaActual}`
+        res.status(200).send(`<script>alert('${msg}')</script>`)
+    }else{
+        next()
+    }
     //capturamos la ruta actual
     //inicializamos el valor de la key que apunta a ruta actual con el valor actual o con cero
     //incrementamos el valor de la key que apunta a la ruta actual
@@ -18,15 +30,39 @@ app.use((req, res, next) => {
         //escribimos el mensaje
         //en una respuesta de texto enviamos un script javascript concatena
     //si aun no es tres... continuamos la ejecucion de las rutas
-    next()
+  
 }
 
 );
 
 app.get('/', (req, res) => {
+    const agent=req.header["user-agent"]
+    res.cookie("navegador",agent,{
+        httpOnly:true
+    })
     res.send('Visita las paginas que tu quieras');
 });
 app.get('/query', (req, res) => {
+    const query_user=req.query
+    if(query_user.data1){
+        res.cookie("data1",query_user.data1,{
+            httpOnly:true,
+            maxAge:1000*20
+        })
+
+    }
+    if(query_user.data2){
+        res.cookie("data2",query_user.data2,{
+            httpOnly:false,
+            maxAge:1000*20
+        })
+    }
+    if(query_user.data3){
+        res.cookie("data3",query_user.data3,{
+            httpOnly:true,
+            maxAge:1000*20
+        })
+    }
     res.send('querys');
 });
 app.get('/ruta1', (req, res) => {
@@ -44,8 +80,9 @@ app.get('/ruta4', (req, res) => {
     res.send('Pagina de ruta4');
 });
 app.get('/historial', (req, res) => {
-    let paginas = null
-    res.send(`Páginas consultadas: ${paginas}`);
+    const paginas = req.session.visitados
+    //let paginas = null
+    res.send(`Páginas consultadas: ${JSON.stringify(paginas)}`);
 });
 
 app.listen(port, () => {
