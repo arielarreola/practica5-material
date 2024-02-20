@@ -19,11 +19,6 @@ app.use((req, res, next) => {
     req.session.visitados[rutaActual]=req.session.visitados[rutaActual]||0
     req.session.visitados[rutaActual]++
     
-    //inicializamos el valor de la key que apunta a ruta actual con el valor actual o con cero
-    //incrementamos el valor de la key que apunta a la ruta actual
-    //si el contador llega a incrementarse a 3
-        //escribimos el mensaje
-        //en una respuesta de texto enviamos un script javascript concatena
     if (req.session.visitados[rutaActual] === 3) {
         res.send(`<script>alert('Has visitado esta página 3 veces');</script>`);
     }
