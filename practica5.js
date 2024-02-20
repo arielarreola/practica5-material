@@ -1,7 +1,9 @@
 const express = require('express');
 const session = require('express-session');
+const cookieParser = require('cookie-parser');
 const port = 3700;
 const app = express();
+app.use(cookieParser())
 
 app.use(session({
     user: 'admin',
@@ -39,7 +41,7 @@ app.get('/', (req, res) => {
     res.cookie("Navegador",agent,{
         httpOnly:true
     })
-    res.send('Visita las paginas que tu quieras');
+    res.send('Visita los deportes preferidos de la gente de la ruta 1-5');
 });
 app.get('/query', (req, res) => {
     const query_user=req.query
@@ -64,18 +66,21 @@ app.get('/query', (req, res) => {
     res.send('querys');
 });
 app.get('/ruta1', (req, res) => {
-    res.send('Pagina de ruta1');
+    res.send('Futbol');
 });
 
 app.get('/ruta2', (req, res) => {
-    res.send('Pagina de ruta2');
+    res.send('Futbol americano');
 });
 app.get('/ruta3', (req, res) => {
-    res.send('Pagina de ruta3');
+    res.send('Basquetbol');
 });
 
 app.get('/ruta4', (req, res) => {
-    res.send('Pagina de ruta4');
+    res.send('Voleyball');
+});
+app.get('/ruta5', (req, res) => {
+    res.send('Taekwondo');
 });
 app.get('/historial', (req, res) => {
     const paginas = req.session.visitados
