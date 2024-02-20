@@ -5,7 +5,7 @@ const app = express()
 app.use(cookieParser())
 
 function createCookies(req, res) {
-    res.cookie('CookieHM', "Esta es una cookie hola mundo", {
+    res.cookie('Oreo', "esta es una cookie sabor oreo", {
         maxAge: 1000*60,
         httpOnly: false,//para que no lo manipule el navegador, sino solo la peticion
         secure: true,//solo en https
@@ -14,21 +14,24 @@ function createCookies(req, res) {
     })
     const agent = req.headers['user-agent']
     res.cookie('InfoNavegador', agent, {
-        maxAge: 20000
+        maxAge: 20000,
+        httpOnly: false,
     })
 }
 
 function deleteCookies(res) {
-    res.clearCookie("CookieHM")
+    res.clearCookie("Oreo")
+    res.clearCookie("InfoNavegador")
 }
 
 app.get('/', (req, res) => {
-    createCookies/req
-    res.send('Hello world')
+    createCookies(req,res)
+    res.send('Oreo')
 })
 
 app.get('/eliminarcookies', (req, res) => {
-
+    console.log(req.cookies)
+    deleteCookies(res)
     res.send('Cookies eliminadas')
 })
 
