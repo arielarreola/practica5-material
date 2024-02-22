@@ -12,8 +12,7 @@ app.use(session({
     }
 }))
 app.get('/', (req, res) => {
-    req.session.visitados=req.session.visitados?req.session.visitados+1:1
-    res.send(`Ruta visitada ${req.session.visitados} veces`)
+    res.send(`Ruta visitada n veces`)
 })
 
 

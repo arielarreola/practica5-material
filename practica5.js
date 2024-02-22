@@ -14,15 +14,7 @@ app.use((req, res, next) => {
     if(!req.session.visitados){
         req.session.visitados={}
     }
-    const rutaActual =req.path
-    req.session.visitados[rutaActual]=req.session.visitados[rutaActual]||0
-    req.session.visitados[rutaActual]++
-    if(req.session.visitados[rutaActual]===3){
-        const msg= `Parece que te interesa el tema de la ruta ${rutaActual}`
-        res.status(200).send(`<script>alert(´${msg}´)</script>`)
-    }else{
-        next()
-    }
+    next()
     //capturamos la ruta actual
     //inicializamos el valor de la key que apunta a ruta actual con el valor actual o con cero
     //incrementamos el valor de la key que apunta a la ruta actual
@@ -42,25 +34,6 @@ app.get('/', (req, res) => {
     res.send('Visita las paginas que tu quieras');
 });
 app.get('/query', (req, res) => {
-    const query_user=req.query
-    if(query_user.data1){
-        res.cookie("Data1",query_user.data1,{
-            httpOnly:true,
-            maxAge:1000*20
-        })
-    }
-        if(query_user.data2){
-            res.cookie("Data2",query_user.data2,{
-                httpOnly:true,
-                maxAge:1000*20
-            })
-    }
-    if(query_user.data3){
-        res.cookie("Data3",query_user.data3,{
-            httpOnly:false,
-            maxAge:1000*20
-        })
-    }
     res.send('querys');
 });
 app.get('/ruta1', (req, res) => {
@@ -78,8 +51,7 @@ app.get('/ruta4', (req, res) => {
     res.send('Pagina de ruta4');
 });
 app.get('/historial', (req, res) => {
-    const paginas = req.session.visitados
-    res.send(`Páginas consultadas: ${JSON.stringify(paginas)}`);
+    res.send(`Páginas consultadas:`);
 });
 
 app.listen(port, () => {
