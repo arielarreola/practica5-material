@@ -6,7 +6,7 @@ app.use(cookieParser())
 
 function createCookies(req, res) {
     res.cookie('CookieHM', "Esta es una cookie hola mundo", {
-        //maxAge: 100000,
+        maxAge: 100000,
         httpOnly: false,//para que no lo manipule el navegador, sino solo la peticion
         secure: true,//solo en https
         sameSite: 'lax',
